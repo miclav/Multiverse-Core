@@ -290,6 +290,10 @@ public class PermissionTools {
      * @return True if they should bypass restrictions
      */
     public boolean playerCanIgnoreGameModeRestriction(MultiverseWorld toWorld, Player teleportee) {
+        // If the player is operator, don't change his gamemode, he can do it himself
+        if (teleportee.isOp()) {
+            return true;
+        }
         if (toWorld != null) {
             return this.plugin.getMVPerms().canIgnoreGameModeRestriction(teleportee, toWorld);
         } else {
