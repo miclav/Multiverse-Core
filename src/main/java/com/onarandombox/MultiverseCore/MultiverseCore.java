@@ -639,7 +639,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 if (section.isConfigurationSection("entryfee")) {
                     ConfigurationSection feeSection = section.getConfigurationSection("entryfee");
                     if (feeSection.isInt("currency"))
-                        world.setCurrency(feeSection.getInt("currency"));
+                        world.setCurrency(feeSection.getString("currency"));
 
                     if (feeSection.isDouble("amount"))
                         world.setPrice(feeSection.getDouble("amount"));

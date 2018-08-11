@@ -496,11 +496,11 @@ public class WorldProperties extends SerializationConfig {
         return this.setPropertyValueUnchecked("respawnWorld", respawnToWorld);
     }
 
-    public int getCurrency() {
+    public String getCurrency() {
         return this.entryfee.getCurrency();
     }
 
-    public void setCurrency(int currency) {
+    public void setCurrency(String currency) {
         this.setPropertyValueUnchecked("entryfee.currency", currency);
     }
 

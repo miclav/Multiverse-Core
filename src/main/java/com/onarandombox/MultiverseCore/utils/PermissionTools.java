@@ -145,7 +145,7 @@ public class PermissionTools {
             }
 
             final MVEconomist economist = plugin.getEconomist();
-            final int currency = toWorld.getCurrency();
+            final String currency = toWorld.getCurrency();
             final String formattedAmount = economist.formatPrice(price, currency);
 
             if (economist.isPlayerWealthyEnough(teleporterPlayer, price, currency)) {
@@ -171,7 +171,7 @@ public class PermissionTools {
         return true;
     }
 
-    private void sendTeleportPaymentMessage (MVEconomist economist, Player teleporterPlayer, Player teleportee, String toWorld, double price, int currency) {
+    private void sendTeleportPaymentMessage (MVEconomist economist, Player teleporterPlayer, Player teleportee, String toWorld, double price, String currency) {
         price = Math.abs(price);
         if (teleporterPlayer.equals(teleportee)) {
             teleporterPlayer.sendMessage("You were " + (price > 0D ? "charged " : "given ") + economist.formatPrice(price, currency) + " for teleporting to " + toWorld);

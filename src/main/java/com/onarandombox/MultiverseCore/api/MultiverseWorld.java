@@ -515,7 +515,7 @@ public interface MultiverseWorld {
      *
      * @return The Type of currency that will be used when users enter this world.
      */
-    int getCurrency();
+    String getCurrency();
 
     /**
      * Sets the type of item that will be required given the price is not 0.
@@ -523,7 +523,7 @@ public interface MultiverseWorld {
      *
      * @param item The Type of currency that will be used when users enter this world.
      */
-    void setCurrency(int item);
+    void setCurrency(String item);
 
     /**
      * Gets the world players will respawn in if they die in this one.

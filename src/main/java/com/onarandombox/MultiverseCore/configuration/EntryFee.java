@@ -15,7 +15,7 @@ public class EntryFee extends SerializationConfig {
     @Property
     private double amount;
     @Property
-    private int currency;
+    private String currency;
 
     public EntryFee() {
         super();
@@ -31,7 +31,7 @@ public class EntryFee extends SerializationConfig {
     @Override
     protected void setDefaults() {
         amount = 0D;
-        currency = -1;
+        currency = null;
     }
 
     /**
@@ -44,7 +44,7 @@ public class EntryFee extends SerializationConfig {
     /**
      * @return the currency
      */
-    public int getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
@@ -60,7 +60,7 @@ public class EntryFee extends SerializationConfig {
      * Sets the currency.
      * @param currency The new value.
      */
-    public void setCurrency(int currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 }

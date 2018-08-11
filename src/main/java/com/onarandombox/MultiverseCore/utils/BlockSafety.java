@@ -80,7 +80,7 @@ public class BlockSafety {
             return false;
         }
 
-        if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+        if (downOne.getBlock().getType() == Material.LAVA ) { // || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
             Logging.finest("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(),
                     this.isSolidBlock(downOne.getBlock().getType()));
             return false;
@@ -138,68 +138,7 @@ public class BlockSafety {
      * If someone has a better way of this... Please either tell us, or submit a pull request!
      */
     private boolean isSolidBlock(Material type) {
-        switch (type) {
-            case AIR:
-                return false;
-            case SNOW:
-                return false;
-            case TRAP_DOOR:
-                return false;
-            case TORCH:
-                return false;
-            case YELLOW_FLOWER:
-                return false;
-            case RED_ROSE:
-                return false;
-            case RED_MUSHROOM:
-                return false;
-            case BROWN_MUSHROOM:
-                return false;
-            case REDSTONE:
-                return false;
-            case REDSTONE_WIRE:
-                return false;
-            case RAILS:
-                return false;
-            case POWERED_RAIL:
-                return false;
-            case REDSTONE_TORCH_ON:
-                return false;
-            case REDSTONE_TORCH_OFF:
-                return false;
-            case DEAD_BUSH:
-                return false;
-            case SAPLING:
-                return false;
-            case STONE_BUTTON:
-                return false;
-            case LEVER:
-                return false;
-            case LONG_GRASS:
-                return false;
-            case PORTAL:
-                return false;
-            case STONE_PLATE:
-                return false;
-            case WOOD_PLATE:
-                return false;
-            case SEEDS:
-                return false;
-            case SUGAR_CANE_BLOCK:
-                return false;
-            case WALL_SIGN:
-                return false;
-            case SIGN_POST:
-                return false;
-            case WOODEN_DOOR:
-                return false;
-            case STATIONARY_WATER:
-                return false;
-            case WATER:
-                return false;
-            default:
-                return true;
-        }
+        return type.isSolid();
     }
 
     /**
@@ -209,7 +148,7 @@ public class BlockSafety {
      */
     public boolean isEntitiyOnTrack(Location l) {
         Material currentBlock = l.getBlock().getType();
-        return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAILS);
+        return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAIL || currentBlock == Material.ACTIVATOR_RAIL );
     }
 
     // TODO maybe remove this?
@@ -240,10 +179,10 @@ public class BlockSafety {
         }
         Location oneBelow = l.clone();
         oneBelow.subtract(0, 1, 0);
-        if (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
+        if (oneBelow.getBlock().getType() == Material.WATER) { // || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
             Location twoBelow = oneBelow.clone();
             twoBelow.subtract(0, 1, 0);
-            return (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
+            return (oneBelow.getBlock().getType() == Material.WATER); // || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
         }
         if (oneBelow.getBlock().getType() != Material.AIR) {
             return false;

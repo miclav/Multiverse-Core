@@ -20,7 +20,7 @@ public class MVEconomist {
         vaultHandler = new VaultHandler(plugin);
     }
 
-    private boolean isUsingVault(int currency) {
+    private boolean isUsingVault(String currency) {
         return !isItemCurrency(currency) && getVaultHandler().hasEconomy();
     }
 
@@ -40,7 +40,7 @@ public class MVEconomist {
      * @param currency the type of currency. A value greater than -1 indicates the material type used for currency.
      * @return the human readable currency string.
      */
-    public String formatPrice(double amount, int currency) {
+    public String formatPrice(double amount, String currency) {
         if (isUsingVault(currency)) {
             return getVaultHandler().getEconomy().format(amount);
         } else {
@@ -68,7 +68,7 @@ public class MVEconomist {
      * @param currency the type of currency. A value greater than -1 indicates the material type used for currency.
      * @return true if the player has enough of the given currency or the amount is 0 or less.
      */
-    public boolean isPlayerWealthyEnough(Player player, double amount, int currency) {
+    public boolean isPlayerWealthyEnough(Player player, double amount, String currency) {
         if (amount <= 0D) {
             return true;
         } else if (isUsingVault(currency)) {
@@ -85,7 +85,7 @@ public class MVEconomist {
      * @param message The more specific message to append to the generic message of not having enough.
      * @return the formatted insufficient funds message.
      */
-    public String getNSFMessage(int currency, String message) {
+    public String getNSFMessage(String currency, String message) {
         return "Sorry, you don't have enough " + (isItemCurrency(currency) ? "items" : "funds") + ". " + message;
     }
 
@@ -97,7 +97,7 @@ public class MVEconomist {
      * @param amount the amount to give.
      * @param currency the type of currency. A value greater than -1 indicates the material type used for currency.
      */
-    public void deposit(Player player, double amount, int currency) {
+    public void deposit(Player player, double amount, String currency) {
         if (isUsingVault(currency)) {
             getVaultHandler().getEconomy().depositPlayer(player, amount);
         } else {
@@ -113,7 +113,7 @@ public class MVEconomist {
      * @param amount the amount to take.
      * @param currency the type of currency. A value greater than -1 indicates the material type used for currency.
      */
-    public void withdraw(Player player, double amount, int currency) {
+    public void withdraw(Player player, double amount, String currency) {
         if (isUsingVault(currency)) {
             getVaultHandler().getEconomy().withdrawPlayer(player, amount);
         } else {
@@ -203,15 +203,15 @@ public class MVEconomist {
      * @param currency the type of currency. A value greater than -1 indicates the material type used for currency.
      * @return true if currency is greater than -1.
      */
-    public static boolean isItemCurrency(int currency) {
-        return currency >= 0;
+    public static boolean isItemCurrency(String currency) {
+        return currency != null;
     }
 
     private static class ItemEconomy {
 
         private static final String ECONOMY_NAME = "Simple Item Economy";
 
-        private static String getFormattedPrice(double amount, int currency) {
+        private static String getFormattedPrice(double amount, String currency) {
             if (isItemCurrency(currency)) {
                 Material m = Material.getMaterial(currency);
                 return m != null ? amount + " " + m.toString() : "NO ITEM FOUND";
@@ -224,35 +224,35 @@ public class MVEconomist {
             return ECONOMY_NAME;
         }
 
-        private static boolean hasEnough(Player player, double amount, int currency) {
+        private static boolean hasEnough(Player player, double amount, String currency) {
             if (isItemCurrency(currency)) {
-                return player.getInventory().contains(currency, (int) amount);
+                return player.getInventory().contains(Material.getMaterial(currency), (int) amount);
             } else {
                 return true;
             }
         }
 
-        private static void deposit(Player player, double amount, int currency) {
+        private static void deposit(Player player, double amount, String currency) {
             if (isItemCurrency(currency)) {
                 giveItem(player, amount, currency);
             }
         }
 
-        private static void withdraw(Player player, double amount, int currency) {
+        private static void withdraw(Player player, double amount, String currency) {
             if (isItemCurrency(currency)) {
                 takeItem(player, amount, currency);
             }
         }
 
-        private static void giveItem(Player player, double amount, int type) {
-            ItemStack item = new ItemStack(type, (int) amount);
+        private static void giveItem(Player player, double amount, String type) {
+            ItemStack item = new ItemStack(Material.getMaterial(type), (int) amount);
             player.getInventory().addItem(item);
             showReceipt(player, (amount * -1), type);
         }
 
-        private static void takeItem(Player player, double amount, int type) {
+        private static void takeItem(Player player, double amount, String type) {
             int removed = 0;
-            HashMap<Integer, ItemStack> items = (HashMap<Integer, ItemStack>) player.getInventory().all(type);
+            HashMap<Integer, ItemStack> items = (HashMap<Integer, ItemStack>) player.getInventory().all(Material.getMaterial(type));
             for (int i : items.keySet()) {
                 if (removed >= amount) {
                     break;
@@ -270,7 +270,7 @@ public class MVEconomist {
             showReceipt(player, amount, type);
         }
 
-        private static void showReceipt(Player player, double price, int item) {
+        private static void showReceipt(Player player, double price, String item) {
             if (price > 0D) {
                 player.sendMessage(String.format("%s%s%s %s",
                         ChatColor.WHITE, "You have been charged", ChatColor.GREEN, getFormattedPrice(price, item)));
