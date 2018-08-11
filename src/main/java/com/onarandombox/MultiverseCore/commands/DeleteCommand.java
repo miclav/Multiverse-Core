@@ -14,6 +14,8 @@ import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.logging.Level;
 
 /**
  * Deletes worlds.
@@ -23,8 +25,8 @@ public class DeleteCommand extends MultiverseCommand {
     public DeleteCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Delete World");
-        this.setCommandUsage("/mv delete" + ChatColor.GREEN + " {WORLD}");
-        this.setArgRange(1, 1);
+        this.setCommandUsage("/mv delete" + ChatColor.GREEN + " {WORLD}" + ChatColor.GOLD + " [--force]");
+        this.setArgRange(1, 2);
         this.addKey("mvdelete");
         this.addKey("mv delete");
         this.addCommandExample("/mv delete " + ChatColor.GOLD + "MyWorld");
@@ -33,9 +35,17 @@ public class DeleteCommand extends MultiverseCommand {
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        Class<?>[] paramTypes = {String.class};
-        List<Object> objectArgs = new ArrayList<Object>(args);
-        this.plugin.getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", objectArgs,
-                paramTypes, ChatColor.GREEN + "World Deleted!", ChatColor.RED + "World could NOT be deleted!");
+        if (args.size() == 2) {
+            if (Objects.equals( args.get(1), "--force")) {
+                this.plugin.deleteWorld(args.get(0));
+            } else {
+                this.plugin.log(Level.FINE, "Wrong arguments: "+args.get(1));
+            }
+        } else {
+            Class<?>[] paramTypes = {String.class};
+            List<Object> objectArgs = new ArrayList<Object>(args);
+            this.plugin.getCommandHandler().queueCommand(sender, "mvdelete", "deleteWorld", objectArgs,
+                    paramTypes, ChatColor.GREEN + "World Deleted!", ChatColor.RED + "World could NOT be deleted!");
+        }
     }
 }
