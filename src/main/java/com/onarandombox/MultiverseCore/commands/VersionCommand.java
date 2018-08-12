@@ -42,7 +42,7 @@ public class VersionCommand extends MultiverseCommand {
         this.addKey("mvv");
         this.addKey("mvversion");
         this.setPermission("multiverse.core.version",
-                "Dumps version info to the console, optionally to pastie.org with -p or pastebin.com with a -b.", PermissionDefault.TRUE);
+                "Dumps version info to the console, optionally to pastie.org with -p or pastebin.com with a -b.", PermissionDefault.OP);
     }
 
     private String getLegacyString() {
