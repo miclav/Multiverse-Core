@@ -111,10 +111,23 @@ public class CreateCommand extends MultiverseCommand {
         }
         Command.broadcastCommandMessage(sender, "Starting creation of world '" + worldName + "'...");
 
-        if (this.worldManager.addWorld(worldName, environment, seed, type, allowStructures, generator, useSpawnAdjust)) {
-            Command.broadcastCommandMessage(sender, "Complete!");
-        } else {
-            Command.broadcastCommandMessage(sender, "FAILED.");
-        }
+        MVWorldManager worldManager = this.worldManager;
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
+        new Runnable() {
+            @Override
+            public void run() {
+                if (worldManager.addWorld(worldName, environment, seed, type, true, generator, true)) {
+                    Command.broadcastCommandMessage(sender, "Complete!");
+                } else {
+                    Command.broadcastCommandMessage(sender, "FAILED.");
+                }
+            }
+        }, 1L);
+
+        // if (this.worldManager.addWorld(worldName, environment, seed, type, allowStructures, generator, useSpawnAdjust)) {
+        //     Command.broadcastCommandMessage(sender, "Complete!");
+        // } else {
+        //     Command.broadcastCommandMessage(sender, "FAILED.");
+        // }
     }
 }

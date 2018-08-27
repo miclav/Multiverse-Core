@@ -37,7 +37,14 @@ public class DeleteCommand extends MultiverseCommand {
     public void runCommand(CommandSender sender, List<String> args) {
         if (args.size() == 2) {
             if (Objects.equals( args.get(1), "--force")) {
-                this.plugin.deleteWorld(args.get(0));
+                MultiverseCore plugin = this.plugin;
+                this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        plugin.deleteWorld(args.get(0));
+                    }
+                }, 1L);
             } else {
                 this.plugin.log(Level.FINE, "Wrong arguments: "+args.get(1));
             }
