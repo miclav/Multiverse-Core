@@ -60,12 +60,6 @@ public class CreateCommand extends MultiverseCommand {
             allowStructures = Boolean.parseBoolean(structureString);
         }
         String typeString = CommandHandler.getFlag("-t", args);
-        boolean useSpawnAdjust = true;
-        for (String s : args) {
-            if (s.equalsIgnoreCase("-n")) {
-                useSpawnAdjust = false;
-            }
-        }
 
         if (this.worldManager.isMVWorld(worldName)) {
             sender.sendMessage(ChatColor.RED + "Multiverse cannot create " + ChatColor.GOLD + ChatColor.UNDERLINE
@@ -116,7 +110,14 @@ public class CreateCommand extends MultiverseCommand {
         new Runnable() {
             @Override
             public void run() {
-                if (worldManager.addWorld(worldName, environment, seed, type, true, generator, true)) {
+                boolean useSpawnAdjust = true;
+                for (String s : args) {
+                    if (s.equalsIgnoreCase("-n")) {
+                        useSpawnAdjust = false;
+                        sender.sendMessage(ChatColor.RED + "Spawn adjust disabled!");
+                    }
+                }
+                if (worldManager.addWorld(worldName, environment, seed, type, true, generator, useSpawnAdjust)) {
                     Command.broadcastCommandMessage(sender, "Complete!");
                 } else {
                     Command.broadcastCommandMessage(sender, "FAILED.");
