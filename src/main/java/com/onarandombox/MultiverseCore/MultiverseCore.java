@@ -77,6 +77,7 @@ import com.onarandombox.MultiverseCore.utils.MVEconomist;
 import com.onarandombox.MultiverseCore.utils.MVMessaging;
 import com.onarandombox.MultiverseCore.utils.MVPermissions;
 import com.onarandombox.MultiverseCore.utils.MVPlayerSession;
+import com.onarandombox.MultiverseCore.utils.MaterialConverter;
 import com.onarandombox.MultiverseCore.utils.SimpleBlockSafety;
 import com.onarandombox.MultiverseCore.utils.SimpleLocationManipulation;
 import com.onarandombox.MultiverseCore.utils.SimpleSafeTTeleporter;
@@ -90,7 +91,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -101,7 +101,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -123,7 +122,7 @@ import java.util.logging.Level;
  * The implementation of the Multiverse-{@link Core}.
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private static final int PROTOCOL = 21;
+    private static final int PROTOCOL = 22;
     // TODO: Investigate if this one is really needed to be static.
     // Doubt it. -- FernFerret
     private static Map<String, String> teleportQueue = new HashMap<String, String>();
@@ -231,7 +230,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     private Buscript buscript;
     private int pluginCount;
     private DestinationFactory destFactory;
-    //private SpoutInterface spoutInterface = null;
     private MultiverseMessaging messaging;
     private BlockSafety blockSafety;
     private LocationManipulation locationManipulation;
@@ -335,13 +333,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.chatListener = new MVPlayerChatListener(this, this.playerListener);
         }
         getServer().getPluginManager().registerEvents(this.chatListener, this);
-        /*
-        // Check to see if spout was already loaded (most likely):
-        if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
-            this.setSpout();
-            this.log(Level.INFO, "Spout integration enabled.");
-        }
-        */
 
         this.initializeBuscript();
         this.setupMetrics();
@@ -638,8 +629,9 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
                 // migrate entryfee
                 if (section.isConfigurationSection("entryfee")) {
                     ConfigurationSection feeSection = section.getConfigurationSection("entryfee");
-                    if (feeSection.isInt("currency"))
-                        world.setCurrency(feeSection.getString("currency"));
+                    if (feeSection.isInt("currency")) {
+                        world.setCurrency(MaterialConverter.convertConfigType(feeSection, "currency"));
+                    }
 
                     if (feeSection.isDouble("amount"))
                         world.setPrice(feeSection.getDouble("amount"));
@@ -887,17 +879,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
     /**
      * {@inheritDoc}
-     *
-     * @deprecated This is deprecated.
-     */
-    @Override
-    @Deprecated
-    public com.onarandombox.MultiverseCore.utils.SafeTTeleporter getTeleporter() {
-        return new com.onarandombox.MultiverseCore.utils.SafeTTeleporter(this);
-    }
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public MVPermissions getMVPerms() {
@@ -1094,25 +1075,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         this.serverFolder = newServerFolder;
     }
-
-    /*
-    /**
-     * Initializes Spout.
-     * /
-    public void setSpout() {
-        this.spoutInterface = new SpoutInterface();
-        this.commandHandler.registerCommand(new SpoutCommand(this));
-    }
-
-    /**
-     * Gets our {@link SpoutInterface}.
-     *
-     * @return The {@link SpoutInterface} we're using.
-     * /
-    public SpoutInterface getSpout() {
-        return this.spoutInterface;
-    }
-    */
 
     /**
      * {@inheritDoc}

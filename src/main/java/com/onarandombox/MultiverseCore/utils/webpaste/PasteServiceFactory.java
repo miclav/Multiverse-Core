@@ -16,8 +16,8 @@ public class PasteServiceFactory {
         switch(type) {
             case PASTEBIN:
                 return new PastebinPasteService(isPrivate);
-            case PASTIE:
-                return new PastiePasteService(isPrivate);
+            case HASTEBIN:
+                return new HastebinPasteService();
             case GITHUB:
                 return new GithubPasteService(isPrivate);
             default:

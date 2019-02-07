@@ -18,8 +18,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -261,7 +263,7 @@ public class WorldProperties extends SerializationConfig {
     @Property(description = "Sorry, 'animals' must either be: true or false.")
     private volatile SpawnSettings spawning;
     @Property
-    private volatile EntryFee entryfee;
+    public volatile EntryFee entryfee;
     @Property(description = "Sorry, 'hunger' must either be: true or false.")
     private volatile boolean hunger;
     @Property(description = "Sorry, 'autoheal' must either be: true or false.")
@@ -496,11 +498,11 @@ public class WorldProperties extends SerializationConfig {
         return this.setPropertyValueUnchecked("respawnWorld", respawnToWorld);
     }
 
-    public String getCurrency() {
+    public Material getCurrency() {
         return this.entryfee.getCurrency();
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(@Nullable Material currency) {
         this.setPropertyValueUnchecked("entryfee.currency", currency);
     }
 

@@ -18,6 +18,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.command.Command;
@@ -44,6 +45,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -59,6 +61,7 @@ import static org.mockito.Mockito.*;
         WeatherChangeEvent.class, ThunderChangeEvent.class, AsyncPlayerChatEvent.class,
         PlayerJoinEvent.class, PlayerRespawnEvent.class, EntityRegainHealthEvent.class,
         FoodLevelChangeEvent.class, WorldManager.class, PluginDescriptionFile.class, JavaPluginLoader.class })
+@PowerMockIgnore("javax.script.*")
 public class TestWorldProperties {
     private TestInstanceCreator creator;
     private MultiverseCore core;
@@ -151,7 +154,7 @@ public class TestWorldProperties {
         assertEquals(Difficulty.NORMAL, mvWorld.getDifficulty());
         assertTrue(mvWorld.canAnimalsSpawn());
         assertTrue(mvWorld.canMonstersSpawn());
-        assertEquals(null, mvWorld.getCurrency());
+        assertNull(mvWorld.getCurrency());
         assertEquals(0, mvWorld.getPrice(), 0);
         assertTrue(mvWorld.getHunger());
         assertTrue(mvWorld.getAutoHeal());
@@ -233,8 +236,8 @@ public class TestWorldProperties {
         assertEquals(false, mvWorld.canAnimalsSpawn());
         mvWorld.setAllowMonsterSpawn(false);
         assertEquals(false, mvWorld.canMonstersSpawn());
-        mvWorld.setCurrency("SPIDER_EYE");
-        assertEquals("SPIDER_EYE", mvWorld.getCurrency());
+        mvWorld.setCurrency(Material.STONE);
+        assertEquals(Material.STONE, mvWorld.getCurrency());
         mvWorld.setPrice(1D);
         assertEquals(1D, mvWorld.getPrice(), 0);
         mvWorld.setHunger(false);
@@ -332,7 +335,7 @@ public class TestWorldProperties {
         assertEquals(Difficulty.PEACEFUL, mvWorld.getDifficulty());
         assertEquals(false, mvWorld.canAnimalsSpawn());
         assertEquals(false, mvWorld.canMonstersSpawn());
-        assertEquals("SPIDER_EYE", mvWorld.getCurrency());
+        assertEquals(Material.STONE, mvWorld.getCurrency());
         assertEquals(1D, mvWorld.getPrice(), 0);
         assertEquals(false, mvWorld.getHunger());
         assertEquals(false, mvWorld.getAutoHeal());

@@ -18,6 +18,7 @@ import com.onarandombox.MultiverseCore.utils.webpaste.PasteServiceType;
 import com.onarandombox.MultiverseCore.utils.webpaste.URLShortener;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -36,7 +37,7 @@ public class VersionCommand extends MultiverseCommand {
     public VersionCommand(MultiverseCore plugin) {
         super(plugin);
         this.setName("Multiverse Version");
-        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[pbg]");
+        this.setCommandUsage("/mv version " + ChatColor.GOLD + "-[bh]");
         this.setArgRange(0, 1);
         this.addKey("mv version");
         this.addKey("mvv");
@@ -160,20 +161,19 @@ public class VersionCommand extends MultiverseCommand {
             public void run() {
                 if (args.size() == 1) {
                     String pasteUrl;
-                    if (args.get(0).equalsIgnoreCase("-p")) {
-                        // private post to pastie
-                        pasteUrl = postToService(PasteServiceType.PASTIE, true, data, files);
-                    } else if (args.get(0).equalsIgnoreCase("-b")) {
+                    if (args.get(0).equalsIgnoreCase("-b")) {
                         // private post to pastebin
                         pasteUrl = postToService(PasteServiceType.PASTEBIN, true, data, files);
-                    } else if (args.get(0).equalsIgnoreCase("-g")) {
-                        // private post to github
-                        pasteUrl = postToService(PasteServiceType.GITHUB, true, data, files);
+                    } else if (args.get(0).equalsIgnoreCase("-h")) {
+                        // private post to pastebin
+                        pasteUrl = postToService(PasteServiceType.HASTEBIN, true, data, files);
                     } else {
                         return;
                     }
 
-                    sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
+                    if (!(sender instanceof ConsoleCommandSender)) {
+                        sender.sendMessage("Version info dumped here: " + ChatColor.GREEN + pasteUrl);
+                    }
                     Logging.info("Version info dumped here: %s", pasteUrl);
                 }
             }

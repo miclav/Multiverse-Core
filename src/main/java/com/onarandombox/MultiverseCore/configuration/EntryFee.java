@@ -2,10 +2,14 @@ package com.onarandombox.MultiverseCore.configuration;
 
 import java.util.Map;
 
+import com.onarandombox.MultiverseCore.utils.MaterialConverter;
 import me.main__.util.SerializationConfig.Property;
 import me.main__.util.SerializationConfig.SerializationConfig;
 
+import me.main__.util.SerializationConfig.Serializor;
+import org.bukkit.Material;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Entryfee-settings.
@@ -14,8 +18,9 @@ import org.bukkit.configuration.serialization.SerializableAs;
 public class EntryFee extends SerializationConfig {
     @Property
     private double amount;
-    @Property
-    private String currency;
+    @Property(serializor = EntryFeeCurrencySerializor.class)
+    @Nullable
+    private Material currency;
 
     public EntryFee() {
         super();
@@ -44,7 +49,8 @@ public class EntryFee extends SerializationConfig {
     /**
      * @return the currency
      */
-    public String getCurrency() {
+    @Nullable
+    public Material getCurrency() {
         return currency;
     }
 
@@ -60,7 +66,19 @@ public class EntryFee extends SerializationConfig {
      * Sets the currency.
      * @param currency The new value.
      */
-    public void setCurrency(String currency) {
+    public void setCurrency(@Nullable Material currency) {
         this.currency = currency;
+    }
+
+    public static final class EntryFeeCurrencySerializor implements Serializor<Material, Object> {
+        @Override
+        public String serialize(Material material) {
+            return material.toString();
+        }
+
+        @Override
+        public Material deserialize(Object o, Class<Material> aClass) {
+            return MaterialConverter.convertTypeString(o.toString());
+        }
     }
 }

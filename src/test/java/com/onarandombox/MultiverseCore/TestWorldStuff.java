@@ -28,8 +28,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Matchers;
 import org.mockito.internal.verification.VerificationModeFactory;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -41,6 +43,7 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PluginManager.class, MultiverseCore.class, Permission.class, Bukkit.class, WorldManager.class,
         PluginDescriptionFile.class, JavaPluginLoader.class })
+@PowerMockIgnore("javax.script.*")
 public class TestWorldStuff {
 
     private TestInstanceCreator creator;
@@ -140,38 +143,38 @@ public class TestWorldStuff {
         verify(mockCommandSender, VerificationModeFactory.times(3)).sendMessage(ChatColor.GREEN + "Complete!");
     }
 
-    // @Test
-    // public void testWorldCreation() {
-    //     // Pull a core instance from the server.
-    //     Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+    @Test
+    public void testWorldCreation() {
+        // Pull a core instance from the server.
+        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
 
-    //     // Make sure Core is not null
-    //     assertNotNull(plugin);
+        // Make sure Core is not null
+        assertNotNull(plugin);
 
-    //     // Make sure Core is enabled
-    //     assertTrue(plugin.isEnabled());
+        // Make sure Core is enabled
+        assertTrue(plugin.isEnabled());
 
-    //     // Initialize a fake command
-    //     Command mockCommand = mock(Command.class);
-    //     when(mockCommand.getName()).thenReturn("mv");
+        // Initialize a fake command
+        Command mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
 
-    //     // Ensure that there are no worlds imported. This is a fresh setup.
-    //     assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
-    //     // Create the world
-    //     String[] normalArgs = new String[]{ "create", "newworld", "normal" };
-    //     plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+        // Create the world
+        String[] normalArgs = new String[]{ "create", "newworld", "normal" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
 
-    //     // We should now have one world!
-    //     assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
+        // We should now have one world!
+        assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
-    //     // Verify
-    //     verify(mockCommandSender).sendMessage("Starting creation of world 'newworld'...");
-    //     verify(mockCommandSender).sendMessage("Complete!");
+        // Verify
+        verify(mockCommandSender).sendMessage("Starting creation of world 'newworld'...");
+        verify(mockCommandSender).sendMessage("Complete!");
 
-    //     WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("newworld"));
-    //     verify(mockServer).createWorld(Matchers.argThat(matcher));
-    // }
+        WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("newworld"));
+        verify(mockServer).createWorld(ArgumentMatchers.argThat(matcher));
+    }
 
     @Test
     public void testWorldCreateInvalidGenerator() {
@@ -202,39 +205,39 @@ public class TestWorldStuff {
         verify(mockCommandSender).sendMessage("Invalid generator! 'BogusGen'. " + ChatColor.RED + "Aborting world creation.");
     }
 
-    // @Test
-    // public void testNullWorld() {
-    //     // Pull a core instance from the server.
-    //     Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
+    @Test
+    public void testNullWorld() {
+        // Pull a core instance from the server.
+        Plugin plugin = mockServer.getPluginManager().getPlugin("Multiverse-Core");
 
-    //     // Make sure Core is not null
-    //     assertNotNull(plugin);
+        // Make sure Core is not null
+        assertNotNull(plugin);
 
-    //     // Make sure Core is enabled
-    //     assertTrue(plugin.isEnabled());
+        // Make sure Core is enabled
+        assertTrue(plugin.isEnabled());
 
-    //     // Initialize a fake command
-    //     Command mockCommand = mock(Command.class);
-    //     when(mockCommand.getName()).thenReturn("mv");
+        // Initialize a fake command
+        Command mockCommand = mock(Command.class);
+        when(mockCommand.getName()).thenReturn("mv");
 
-    //     // Ensure that there are no worlds imported. This is a fresh setup.
-    //     assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
+        // Ensure that there are no worlds imported. This is a fresh setup.
+        assertEquals(0, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
-    //     // Create the NULL world
-    //     // The safe check is now BALLS SLOW. Use the -n to skip checking.
-    //     String[] normalArgs = new String[]{ "create", "nullworld", "normal", "-n" };
-    //     plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
+        // Create the NULL world
+        // The safe check is now BALLS SLOW. Use the -n to skip checking.
+        String[] normalArgs = new String[]{ "create", "nullworld", "normal", "-n" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", normalArgs);
 
-    //     // We should now have one world!
-    //     assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
+        // We should now have one world!
+        assertEquals(1, creator.getCore().getMVWorldManager().getMVWorlds().size());
 
-    //     // Verify
-    //     verify(mockCommandSender).sendMessage("Starting creation of world 'nullworld'...");
-    //     verify(mockCommandSender).sendMessage("Complete!");
+        // Verify
+        verify(mockCommandSender).sendMessage("Starting creation of world 'nullworld'...");
+        verify(mockCommandSender).sendMessage("Complete!");
 
-    //     WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("nullworld"));
-    //     verify(mockServer).createWorld(Matchers.argThat(matcher));
-    // }
+        WorldCreatorMatcher matcher = new WorldCreatorMatcher(new WorldCreator("nullworld"));
+        verify(mockServer).createWorld(ArgumentMatchers.argThat(matcher));
+    }
 
     @Test
     // TODO Migrate this to TestWorldProperties

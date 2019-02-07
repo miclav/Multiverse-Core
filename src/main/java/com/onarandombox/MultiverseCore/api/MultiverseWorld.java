@@ -13,10 +13,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -152,37 +154,6 @@ public interface MultiverseWorld {
      * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
      */
     boolean setPropertyValue(String property, String value) throws PropertyDoesNotExistException;
-
-    /**
-     * Gets the actual MVConfigProperty from this world.
-     * It will throw a PropertyDoesNotExistException if the property is not found.
-     *
-     * @param property The name of a world property to get.
-     * @param expected The type of the expected property. Use Object.class if this doesn't matter for you.
-     * @param <T> The type of the expected property.
-     *
-     * @return A valid MVWorldProperty.
-     *
-     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
-     * @deprecated We don't use {@link com.onarandombox.MultiverseCore.configuration.MVConfigProperty} any longer!
-     */
-    @Deprecated
-    <T> com.onarandombox.MultiverseCore.configuration.MVConfigProperty<T> getProperty(String property, Class<T> expected) throws PropertyDoesNotExistException;
-
-    // old config
-    /**
-     * Adds the property to the given value.
-     * It will throw a PropertyDoesNotExistException if the property is not found.
-     *
-     * @param property The name of a world property to set.
-     * @param value    A value in string representation, it will be parsed to the correct type.
-     * @param sender   The sender who wants this value to be set.
-     * @return True if the value was set, false if not.
-     * @throws PropertyDoesNotExistException Thrown if the property was not found in the world.
-     * @deprecated Use {@link #setPropertyValue(String, String)} instead.
-     */
-    @Deprecated
-    boolean setProperty(String property, String value, CommandSender sender) throws PropertyDoesNotExistException;
 
     /**
      * Adds a value to the given property. The property must be a {@link com.onarandombox.MultiverseCore.enums.AddProperties}.
@@ -511,19 +482,21 @@ public interface MultiverseWorld {
     void setPrice(double price);
 
     /**
-     * Gets the Type of currency that will be used when users enter this world.
+     * Gets the type of currency that will be used when users enter this world. A value of null indicates a non-item
+     * based currency is used.
      *
-     * @return The Type of currency that will be used when users enter this world.
+     * @return The type of currency that will be used when users enter this world.
      */
-    String getCurrency();
+    @Nullable
+    Material getCurrency();
 
     /**
      * Sets the type of item that will be required given the price is not 0.
-     * Use -1 to use an AllPay economy, or any valid itemid
+     * Use a value of null to specify a non-item based currency.
      *
      * @param item The Type of currency that will be used when users enter this world.
      */
-    void setCurrency(String item);
+    void setCurrency(@Nullable Material item);
 
     /**
      * Gets the world players will respawn in if they die in this one.

@@ -24,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
@@ -33,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 
 import java.util.Collections;
@@ -280,7 +282,9 @@ public class MVWorld implements MultiverseWorld {
                 }
                 world.setSpawnFlags(allowMonsters, allowAnimals);
             }
-            plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(MVWorld.this);
+            if (MultiverseCoreConfiguration.getInstance().isAutoPurgeEnabled()) {
+                plugin.getMVWorldManager().getTheWorldPurger().purgeWorld(MVWorld.this);
+            }
             return super.validateChange(property, newValue, oldValue, object);
         }
     }
@@ -603,29 +607,6 @@ public class MVWorld implements MultiverseWorld {
 
     /**
      * {@inheritDoc}
-     *
-     * @deprecated This is deprecated.
-     */
-    @Override
-    @Deprecated
-    public <T> com.onarandombox.MultiverseCore.configuration.MVConfigProperty<T> getProperty(String property,
-            Class<T> expected) throws PropertyDoesNotExistException {
-        throw new UnsupportedOperationException("'MVConfigProperty<T> getProperty(String,Class<T>)' is no longer supported!");
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated This is deprecated.
-     */
-    @Override
-    @Deprecated
-    public boolean setProperty(String name, String value, CommandSender sender) throws PropertyDoesNotExistException {
-        return this.setPropertyValue(name, value);
-    }
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public String getPropertyValue(String property) throws PropertyDoesNotExistException {
@@ -943,7 +924,7 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    public String getCurrency() {
+    public Material getCurrency() {
         return this.props.getCurrency();
     }
 
@@ -951,7 +932,7 @@ public class MVWorld implements MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    public void setCurrency(String currency) {
+    public void setCurrency(@Nullable Material currency) {
         this.props.setCurrency(currency);
     }
 
