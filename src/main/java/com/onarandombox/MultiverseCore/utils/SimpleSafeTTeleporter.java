@@ -92,8 +92,12 @@ public class SimpleSafeTTeleporter implements SafeTTeleporter {
             if (safe != null) {
                 return safe;
             }
+            currentLevel++;
+        }
 
-            // Check below
+        // Check below
+        currentLevel = 1;
+        while (currentLevel <= tolerance) {
             locToCheck = l.clone();
             locToCheck.subtract(0, currentLevel, 0);
             safe = this.checkAroundLocation(locToCheck, radius);
