@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.api.SafeTTeleporter;
 import com.onarandombox.MultiverseCore.event.MVRespawnEvent;
 import com.onarandombox.MultiverseCore.utils.PermissionTools;
 import org.bukkit.GameMode;
@@ -185,6 +186,20 @@ public class MVPlayerListener implements Listener {
         if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             // The player is Teleporting to the same world.
             this.plugin.log(Level.FINER, "Player '" + teleportee.getName() + "' is teleporting to the same world.");
+            // Still make sure the place is safe when using the END_GATEWAY
+            if( event.getCause() == PlayerTeleportEvent.TeleportCause.END_GATEWAY ){
+                this.plugin.log(Level.FINER, "Checking the destination of this TP as it usually very unsafe...");
+                SafeTTeleporter sfteleporter = this.plugin.getSafeTTeleporter();
+                Location l = sfteleporter.getSafeLocation( event.getTo(), 16, 16 );
+                if( l != null ){
+                    sfteleporter.safelyTeleport( teleporter, teleportee, l, true );
+                } else {
+                    this.plugin.log(Level.FINER, "Reverting to spzw position as we couldn't find a place for you... sorry");
+                    sfteleporter.safelyTeleport( teleporter, teleportee, event.getTo().getWorld().getSpawnLocation(), true );
+                }
+                event.setCancelled(true);
+                return;
+            }
             this.stateSuccess(teleportee.getName(), toWorld.getAlias());
             return;
         }
