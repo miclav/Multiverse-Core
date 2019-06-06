@@ -35,7 +35,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.Collections;
 import java.util.List;
@@ -1207,13 +1207,13 @@ public class MVWorld implements MultiverseWorld {
 
     @Override
     public String toString() {
-        final JSONObject jsonData = new JSONObject();
-        jsonData.put("Name", getName());
-        jsonData.put("Env", getEnvironment().toString());
-        jsonData.put("Type", getWorldType().toString());
-        jsonData.put("Gen", getGenerator());
-        final JSONObject topLevel = new JSONObject();
-        topLevel.put(getClass().getSimpleName() + "@" + hashCode(), jsonData);
+        final JsonObject jsonData = new JsonObject();
+        jsonData.addProperty("Name", getName());
+        jsonData.addProperty("Env", getEnvironment().toString());
+        jsonData.addProperty("Type", getWorldType().toString());
+        jsonData.addProperty("Gen", getGenerator());
+        final JsonObject topLevel = new JsonObject();
+        topLevel.add(getClass().getSimpleName() + "@" + hashCode(), jsonData);
         return topLevel.toString();
     }
 }
