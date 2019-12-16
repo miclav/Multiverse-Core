@@ -7,6 +7,23 @@
 
 package com.onarandombox.MultiverseCore;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+
 import buscript.Buscript;
 import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MVWorld.NullLocation;
@@ -61,6 +78,7 @@ import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import com.onarandombox.MultiverseCore.destination.ExactDestination;
 import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
+import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
@@ -106,23 +124,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.mcstats.Metrics;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-
 /**
  * The implementation of the Multiverse-{@link Core}.
  */
 public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
-    private static final int PROTOCOL = 22;
+    private static final int PROTOCOL = 24;
     // TODO: Investigate if this one is really needed to be static.
     // Doubt it. -- FernFerret
     private static Map<String, String> teleportQueue = new HashMap<String, String>();
@@ -169,11 +175,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
     public static void addPlayerToTeleportQueue(String teleporter, String teleportee) {
         Logging.finest("Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
         teleportQueue.put(teleportee, teleporter);
-    }
-
-    @Override
-    public String toString() {
-        return "The Multiverse-Core Plugin";
     }
 
     /**
@@ -304,7 +305,6 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Setup & Load our Configuration files.
         loadConfigs();
         if (this.multiverseConfig != null) {
-            Logging.setDebugLevel(getMVConfig().getGlobalDebug());
             Logging.setShowingConfig(!getMVConfig().getSilentStart());
             this.worldManager.loadDefaultWorlds();
             this.worldManager.loadWorlds(true);
@@ -339,6 +339,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         // Output a little snippet to show it's enabled.
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
+
+        if (getMVConfig().isShowingDonateMessage()) {
+            getLogger().config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
+            getLogger().config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
+        }
     }
 
     /**
@@ -462,6 +467,7 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         pm.registerEvents(this.entityListener, this);
         pm.registerEvents(this.weatherListener, this);
         pm.registerEvents(this.portalListener, this);
+        log(Level.INFO, "We are aware of the warning about the deprecated event. There is no alternative that allows us to do what we need to do. The performance impact is negligible.");
         pm.registerEvents(this.worldListener, this);
         pm.registerEvents(new MVMapListener(this), this);
     }
@@ -509,6 +515,12 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         // Old Config Format
         this.migrate22Values();
         this.saveMVConfigs();
+
+        int level = Logging.getDebugLevel();
+        Logging.setDebugLevel(getMVConfig().getGlobalDebug());
+        if (level != Logging.getDebugLevel()) {
+            getServer().getPluginManager().callEvent(new MVDebugModeEvent(level));
+        }
     }
 
     /**

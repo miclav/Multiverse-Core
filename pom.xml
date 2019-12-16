@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.onarandombox.multiversecore</groupId>
     <artifactId>Multiverse-Core</artifactId>
-    <version>3.0.0-SNAPSHOT-miclav</version>
+    <version>4.1.1-SNAPSHOT-miclav</version>
     <name>Multiverse-Core</name>
     <description>World Management Plugin</description>
     <properties>
@@ -275,7 +275,7 @@
         <dependency>
             <groupId>com.pneumaticraft.commandhandler</groupId>
             <artifactId>CommandHandler</artifactId>
-            <version>10</version>
+            <version>11</version>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
